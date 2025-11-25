@@ -1,8 +1,8 @@
-CXX = clang++
+CXX = c++
 
 CXXFLAGS = -Wall -Wextra -Werror -Wpedantic -std=c++23 -O3
 
-TARGET = rklog_test.exe
+TARGET = rklog_test
 
 $(TARGET): test.o
 	$(CXX) $(CXXFLAGS) $^ -o $@

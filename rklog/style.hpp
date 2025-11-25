@@ -2,6 +2,7 @@
 
 #include "config.hpp"
 #include "level.hpp"
+#include "platform.hpp"
 
 namespace rklog {
 
@@ -11,7 +12,7 @@ public:
     constexpr LogStyle(LogConfig cfgInfo, LogConfig cfgWarning, LogConfig cfgError, LogConfig cfgFatal) noexcept :
         m_CfgInfo(cfgInfo), m_CfgWarning(cfgWarning), m_CfgError(cfgError), m_CfgFatal(cfgFatal) {}
 
-    static constexpr LogStyle DefaultStyle() noexcept
+    static constexpr LogStyle Default() noexcept
     {
         return LogStyle(LogConfig::DefaultInfo(), LogConfig::DefaultWarning(), LogConfig::DefaultError(), LogConfig::DefaultFatal());
     }
@@ -29,6 +30,8 @@ public:
         case LogLevel::FATAL:
             return m_CfgFatal;
         }
+
+        RKLOG_UNREACHABLE();
     }
 
 private:

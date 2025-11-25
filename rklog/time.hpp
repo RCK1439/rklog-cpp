@@ -1,5 +1,7 @@
 #pragma once
 
+#include "platform.hpp"
+
 #include <chrono>
 
 namespace rklog {
@@ -13,15 +15,20 @@ public:
     {
         const std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
         const std::time_t cNow = std::chrono::system_clock::to_time_t(now);
-        
+
+#if defined(RKLOG_PLATFORM_WINDOWS)
         std::tm localTime;
         const errno_t err = localtime_s(&localTime, &cNow);
         if (err == 0)
         {
-            return TimeStamp(localTime.tm_hour, localTime.tm_min, localTime.tm_sec);
+            return TimeStamp(static_cast<uint32_t>(localTime.tm_hour), static_cast<uint32_t>(localTime.tm_min), static_cast<uint32_t>(localTime.tm_sec));
         }
 
         return TimeStamp();
+#else
+    const std::tm* const localTime = std::localtime(&cNow);
+    return TimeStamp(static_cast<uint32_t>(localTime->tm_hour), static_cast<uint32_t>(localTime->tm_min), static_cast<uint32_t>(localTime->tm_sec));
+#endif
     }
 
     inline uint32_t Hours() const noexcept

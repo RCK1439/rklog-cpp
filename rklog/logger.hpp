@@ -91,7 +91,7 @@ public:
 
     static inline ConsoleLogger Default(std::string_view title) noexcept
     {
-        return ConsoleLogger(title, LogStyle::DefaultStyle());
+        return ConsoleLogger(title, LogStyle::Default());
     }
 
 protected:
@@ -117,7 +117,7 @@ public:
 
     static inline FileLogger Default(std::string_view fileName, std::string_view title)
     {
-        return FileLogger(fileName, title, LogStyle::DefaultStyle());
+        return FileLogger(fileName, title, LogStyle::Default());
     }
 
 protected:
