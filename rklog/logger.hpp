@@ -5,10 +5,10 @@
 #include "style.hpp"
 #include "platform.hpp"
 
+#include <format>
 #include <fstream>
 #include <iostream>
 #include <print>
-#include <format>
 #if defined(RKLOG_PLATFORM_WINDOWS)
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
