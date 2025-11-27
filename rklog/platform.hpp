@@ -1,5 +1,7 @@
 #pragma once
 
+// --- operating system detection ---------------------------------------------
+
 #if defined(_WIN32) || defined(_WIN64)
 #define RKLOG_PLATFORM_WINDOWS
 #elif defined(__linux__)
@@ -10,6 +12,8 @@
 #error "Unsupported platform"
 #endif
 
+// --- compiler detection -----------------------------------------------------
+
 #if defined(_MSC_VER)
 #define RKLOG_COMPILER_MSVC
 #elif defined(__clang__)
@@ -19,6 +23,8 @@
 #else
 #error "Unsupported compiler"
 #endif
+
+// --- unreachable macro ------------------------------------------------------
 
 #if defined(__GNUC__) || defined(__clang__)
 #define RKLOG_UNREACHABLE() __builtin_unreachable()

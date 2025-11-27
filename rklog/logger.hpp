@@ -19,6 +19,8 @@
 
 namespace rklog {
 
+// --- format specifiers ------------------------------------------------------
+
 #define RKLOG_FMT_COLOR_OUTPUT "{}{}{}" RKLOG_ESC_CODE_RESET
 //                               | | |
 //                               | | log message
@@ -30,12 +32,33 @@ namespace rklog {
 //                         | log message
 //                         log label
 
+// --- type definitions -------------------------------------------------------
+
+/**
+ * Base class for the logger
+ */
 class Logger
 {
 public:
+    /**
+     * Creates a logger with a title and style
+     *
+     * @param title
+     *      The title of the logger
+     * @param style
+     *      The style of the log messages
+     */
     constexpr Logger(std::string_view title, LogStyle style) noexcept :
         m_Title(title), m_Style(style) {}
 
+    /**
+     * Logs a message to the output stream with an info severity tag.
+     *
+     * @param fmt
+     *      The format specifier of the message
+     * @param args
+     *      The arguments of the message
+     */
     template<typename ... Args>
     void Info(const std::format_string<Args...> fmt, Args&& ... args)
     {
@@ -43,6 +66,14 @@ public:
         LogInternal(msg, LogLevel::INFO);
     }
 
+    /**
+     * Logs a message to the output stream with a warning severity tag.
+     *
+     * @param fmt
+     *      The format specifier of the message
+     * @param args
+     *      The arguments of the message
+     */
     template<typename ... Args>
     void Warn(const std::format_string<Args...> fmt, Args&& ... args)
     {
@@ -50,6 +81,14 @@ public:
         LogInternal(msg, LogLevel::WARNING);
     }
 
+    /**
+     * Logs a message to the output stream with an error severity tag.
+     *
+     * @param fmt
+     *      The format specifier of the message
+     * @param args
+     *      The arguments of the message
+     */
     template<typename ... Args>
     void Error(const std::format_string<Args...> fmt, Args&& ... args)
     {
@@ -57,6 +96,14 @@ public:
         LogInternal(msg, LogLevel::ERROR);
     }
 
+    /**
+     * Logs a message to the output stream with a fatal severity tag.
+     *
+     * @param fmt
+     *      The format specifier of the message
+     * @param args
+     *      The arguments of the message
+     */
     template<typename ... Args>
     void Fatal(const std::format_string<Args...> fmt, Args&& ... args)
     {
@@ -65,18 +112,37 @@ public:
     }
 
 protected:
+    /**
+     * Internal implementation of the log message
+     *
+     * @param msg
+     *      The message to log
+     * @param lvl
+     *      The severity of the log message
+     */
     virtual void LogInternal(std::string_view msg, LogLevel lvl) = 0;
 
 protected:
-    std::string m_Title;
-    LogStyle    m_Style;
+    std::string m_Title; // The title of the logger
+    LogStyle    m_Style; // The style of the logger
 };
 
 // --- console logger ---------------------------------------------------------
 
+/**
+ * A logger that logs to the terminal via `stderr`
+ */
 class ConsoleLogger final : public Logger
 {
 public:
+    /**
+     * Creates an instance of the `ConsoleLogger`
+     *
+     * @param title
+     *      The title of the logger
+     * @param style
+     *      The style of the log messages
+     */
     ConsoleLogger(std::string_view title, LogStyle style) noexcept :
         Logger(title, style)
     {
@@ -89,6 +155,15 @@ public:
 #endif
     }
 
+    /**
+     * Creates an instance of the `ConsoleLogger` with default styling
+     *
+     * @param title
+     *      The title of the logger
+     *
+     * @return
+     *      The default console logger
+     */
     static inline ConsoleLogger Default(std::string_view title) noexcept
     {
         return ConsoleLogger(title, LogStyle::Default());
@@ -96,6 +171,14 @@ public:
 
 protected:
 
+    /**
+     * Logs `msg` to `stderr` with `lvl` severity
+     *
+     * @param msg
+     *      The message to log
+     * @param lvl
+     *      The severity level of the log message
+     */
     virtual void LogInternal(std::string_view msg, LogLevel lvl) override
     {
         const LogConfig cfg = m_Style.GetConfig(lvl);
@@ -109,18 +192,49 @@ protected:
 
 // --- file logger ------------------------------------------------------------
 
+/**
+ * A logger that logs to a file in a text format
+ */
 class FileLogger final : public Logger
 {
 public:
+    /**
+     * Creates an instance of the `FileLogger`
+     *
+     * @param fileName
+     *      The name of the file to log to
+     * @param title
+     *      The title of the logger
+     * @param style
+     *      The styling of the log messages
+     */
     FileLogger(std::string_view fileName, std::string_view title, LogStyle style) :
         Logger(title, style), m_FileHandle(fileName.data()) {}
 
+    /**
+     * Creates an instance of the `FileLogger` with default styling
+     *
+     * @param title
+     *      The title of the logger
+     *
+     * @return
+     *      The default file logger
+     */
     static inline FileLogger Default(std::string_view fileName, std::string_view title)
     {
         return FileLogger(fileName, title, LogStyle::Default());
     }
 
 protected:
+
+    /**
+     * Logs `msg` to the file with `lvl` severity
+     *
+     * @param msg
+     *      The message to log to the file
+     * @param lvl
+     *      The severity of the log message
+     */
     virtual void LogInternal(std::string_view msg, LogLevel lvl) override
     {
         const LogConfig cfg = m_Style.GetConfig(lvl);
@@ -130,7 +244,7 @@ protected:
     }
     
 private:
-    std::ofstream m_FileHandle;
+    std::ofstream m_FileHandle; // The handle to the file being logged to
 };
 
 }

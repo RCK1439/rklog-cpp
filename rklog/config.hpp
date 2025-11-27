@@ -1,5 +1,7 @@
 #pragma once
 
+#include "level.hpp"
+#include "platform.hpp"
 #include "time.hpp"
 
 #include <cstdint>
@@ -8,6 +10,8 @@
 #include <string_view>
 
 namespace rklog {
+
+// --- escape codes -----------------------------------------------------------
 
 #define RKLOG_ESC_CODE_START "\033["
 #define RKLOG_ESC_CODE_END   "m"
@@ -35,76 +39,161 @@ namespace rklog {
 
 #define RKLOG_FMT_LABEL "[{}]:[{}]:[{}]: "
 
+// --- type definitions -------------------------------------------------------
+
+/**
+ * Class representing color in an RGB format
+ */
 struct Color final
 {
 public:
-    uint8_t r;
-    uint8_t g;
-    uint8_t b;
+    uint8_t r; // Red channel
+    uint8_t g; // Green channel
+    uint8_t b; // Blue channel
 
 public:
+    /**
+     * Creates a new instance of `Color` with the given RGB channel values.
+     *
+     * @param r
+     *      The red channel value
+     * @param g
+     *      The green channel value
+     * @param b
+     *      The blue channel value
+     */
     constexpr Color(uint8_t r, uint8_t g, uint8_t b) noexcept :
         r(r), g(g), b(b) {}
 
+    /**
+     * Creates an instance of a green color
+     *
+     * @return
+     *      A green color
+     */
     static constexpr Color Green() noexcept
     {
         return Color(0, 255, 0);
     }
 
+    /**
+     * Creates an instance of a yellow color
+     *
+     * @return
+     *      A yellow color
+     */
     static constexpr Color Yellow() noexcept
     {
         return Color(255, 255, 0);
     }
 
+    /**
+     * Creates an instance of a red color
+     *
+     * @return
+     *      A red color
+     */
     static constexpr Color Red() noexcept
     {
         return Color(255, 0, 0);
     }
 
+    /**
+     * Creates an instance of a white color
+     *
+     * @return
+     *      A white color
+     */
     static constexpr Color White() noexcept
     {
         return Color(255, 255, 255);
     }
 
+    /**
+     * Creates an instance of a black color
+     *
+     * @return
+     *      A black color
+     */
     static constexpr Color Black() noexcept
     {
         return Color(0, 0, 0);
     }
 };
 
+/**
+ * Class representing a configuration for a specific log-level
+ */
 class LogConfig final
 {
 public:
+    /**
+     * Creates an instance of `LogConfig` with a foreground color
+     *
+     * @param tag
+     *      A tag representing the log level
+     * @param foreground
+     *      The foreground color of the log text
+     */
     constexpr LogConfig(std::string_view tag, Color foreground) noexcept :
         m_Tag(tag), m_Foreground(foreground) {}
+
+    /**
+     * Creates an instance of `LogConfig` with a foreground and background
+     * color
+     *
+     * @param tag
+     *      A tag representing the log level
+     * @param foreground
+     *      The foreground color of the log text
+     * @param background
+     *      The background color of the log text
+     */
     constexpr LogConfig(std::string_view tag, Color foreground, Color background) noexcept :
         m_Tag(tag), m_Foreground(foreground), m_Background(background) {}
 
-    static constexpr LogConfig DefaultInfo() noexcept
+    /**
+     * Returns an instance of the default configuration for the templated log
+     * level
+     *
+     * @return
+     *      The default configuration for the given log level
+     */
+    template<LogLevel lvl>
+    static constexpr LogConfig DefaultFor() noexcept
     {
-        return LogConfig("INFO", Color::Green());
+        switch (lvl)
+        {
+        case LogLevel::INFO:
+            return LogConfig("INFO", Color::Green());
+        case LogLevel::WARNING:
+            return LogConfig("WARNING", Color::Yellow());
+        case LogLevel::ERROR:
+            return LogConfig("ERROR", Color::Red());
+        case LogLevel::FATAL:
+            return LogConfig("FATAL", Color::White(), Color::Red());
+        }
+
+        RKLOG_UNREACHABLE();
     }
 
-    static constexpr LogConfig DefaultWarning() noexcept
-    {
-        return LogConfig("WARNING", Color::Yellow());
-    }
-
-    static constexpr LogConfig DefaultError() noexcept
-    {
-        return LogConfig("ERROR", Color::Red());
-    }
-
-    static constexpr LogConfig DefaultFatal() noexcept
-    {
-        return LogConfig("FATAL", Color::White(), Color::Red());
-    }
-
+    /**
+     * Generates the log label in format of `[title]:[tag]:[hrs:mins:secs]: `
+     *
+     * @return
+     *      The label of the log message
+     */
     std::string GenerateLabel(std::string_view title, const TimeStamp& ts) const
     {
         return std::format(RKLOG_FMT_LABEL, title, m_Tag, ts);
     }
 
+    /**
+     * Generates the ASCII color prelude for logging colored text
+     *
+     * @return
+     *      The ASCII color prelude
+     */
     std::string GenerateColorPrelude() const
     {
         if (m_Background.has_value())
@@ -117,9 +206,9 @@ public:
     }
 
 private:
-    std::string_view     m_Tag;                       // tag title for the severity level
-    Color                m_Foreground;                // background color
-    std::optional<Color> m_Background = std::nullopt; // foreground color
+    std::string_view     m_Tag;                       // Tag title for the severity level
+    Color                m_Foreground;                // Background color
+    std::optional<Color> m_Background = std::nullopt; // Foreground color
 };
 
 }
