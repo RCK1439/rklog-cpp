@@ -186,7 +186,11 @@ protected:
         const std::string label = cfg.GenerateLabel(m_Title, TimeStamp::Now());
         const std::string colorPrelude = cfg.GenerateColorPrelude();
 
+#if defined(RKLOG_COMPILER_GCC)
+        std::cerr << std::format(RKLOG_FMT_COLOR_OUTPUT, colorPrelude, label, msg) << '\n';
+#else
         std::println(std::cerr, RKLOG_FMT_COLOR_OUTPUT, colorPrelude, label, msg);
+#endif
     }
 };
 
@@ -240,7 +244,11 @@ protected:
         const LogConfig cfg = m_Style.GetConfig(lvl);
         const std::string label = cfg.GenerateLabel(m_Title, TimeStamp::Now());
 
+#if defined(RKLOG_COMPILER_GCC)
+        m_FileHandle << std::format(RKLOG_FMT_OUTPUT, label, msg) << '\n';
+#else
         std::println(m_FileHandle, RKLOG_FMT_OUTPUT, label, msg);
+#endif
     }
     
 private:
