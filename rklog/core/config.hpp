@@ -47,9 +47,9 @@ namespace rklog {
 struct Color final
 {
 public:
-    uint8_t r; // Red channel
-    uint8_t g; // Green channel
-    uint8_t b; // Blue channel
+    const uint8_t r = 0xFF; // Red channel
+    const uint8_t g = 0xFF; // Green channel
+    const uint8_t b = 0xFF; // Blue channel
 
 public:
     /**
@@ -64,61 +64,6 @@ public:
      */
     constexpr Color(uint8_t r, uint8_t g, uint8_t b) noexcept :
         r(r), g(g), b(b) {}
-
-    /**
-     * Creates an instance of a green color
-     *
-     * @return
-     *      A green color
-     */
-    static constexpr Color Green() noexcept
-    {
-        return Color(0, 255, 0);
-    }
-
-    /**
-     * Creates an instance of a yellow color
-     *
-     * @return
-     *      A yellow color
-     */
-    static constexpr Color Yellow() noexcept
-    {
-        return Color(255, 255, 0);
-    }
-
-    /**
-     * Creates an instance of a red color
-     *
-     * @return
-     *      A red color
-     */
-    static constexpr Color Red() noexcept
-    {
-        return Color(255, 0, 0);
-    }
-
-    /**
-     * Creates an instance of a white color
-     *
-     * @return
-     *      A white color
-     */
-    static constexpr Color White() noexcept
-    {
-        return Color(255, 255, 255);
-    }
-
-    /**
-     * Creates an instance of a black color
-     *
-     * @return
-     *      A black color
-     */
-    static constexpr Color Black() noexcept
-    {
-        return Color(0, 0, 0);
-    }
 };
 
 /**
@@ -127,6 +72,8 @@ public:
 class LogConfig final
 {
 public:
+    LogConfig() = delete;
+
     /**
      * Creates an instance of `LogConfig` with a foreground color
      *
@@ -135,7 +82,7 @@ public:
      * @param foreground
      *      The foreground color of the log text
      */
-    constexpr LogConfig(std::string_view tag, Color foreground) noexcept :
+    constexpr explicit LogConfig(std::string_view tag, Color foreground) noexcept :
         m_Tag(tag), m_Foreground(foreground) {}
 
     /**
@@ -149,33 +96,8 @@ public:
      * @param background
      *      The background color of the log text
      */
-    constexpr LogConfig(std::string_view tag, Color foreground, Color background) noexcept :
+    constexpr explicit LogConfig(std::string_view tag, Color foreground, Color background) noexcept :
         m_Tag(tag), m_Foreground(foreground), m_Background(background) {}
-
-    /**
-     * Returns an instance of the default configuration for the templated log
-     * level
-     *
-     * @return
-     *      The default configuration for the given log level
-     */
-    template<LogLevel lvl>
-    static constexpr LogConfig DefaultFor() noexcept
-    {
-        switch (lvl)
-        {
-        case LogLevel::INFO:
-            return LogConfig("INFO", Color::Green());
-        case LogLevel::WARNING:
-            return LogConfig("WARNING", Color::Yellow());
-        case LogLevel::ERROR:
-            return LogConfig("ERROR", Color::Red());
-        case LogLevel::FATAL:
-            return LogConfig("FATAL", Color::White(), Color::Red());
-        }
-
-        RKLOG_UNREACHABLE();
-    }
 
     /**
      * Generates the log label in format of `[title]:[tag]:[hrs:mins:secs]: `
@@ -206,9 +128,9 @@ public:
     }
 
 private:
-    std::string_view     m_Tag;                       // Tag title for the severity level
-    Color                m_Foreground;                // Background color
-    std::optional<Color> m_Background = std::nullopt; // Foreground color
+    const std::string_view     m_Tag;                       // Tag title for the severity level
+    const Color                m_Foreground;                // Background color
+    const std::optional<Color> m_Background = std::nullopt; // Foreground color
 };
 
 }

@@ -84,13 +84,13 @@ private:
      * @param seconds
      *      The number of seconds
      */
-    TimeStamp(uint32_t hours, uint32_t minutes, uint32_t seconds) :
+    constexpr explicit TimeStamp(uint32_t hours, uint32_t minutes, uint32_t seconds) noexcept :
         m_Hours(hours), m_Minutes(minutes), m_Seconds(seconds) {}
 
 private:
-    uint32_t m_Hours = 0;   // The hours of the time stamp
-    uint32_t m_Minutes = 0; // The minutes of the time stamp
-    uint32_t m_Seconds = 0; // The seconds of the time stamp
+    const uint32_t m_Hours = 0;   // The hours of the time stamp
+    const uint32_t m_Minutes = 0; // The minutes of the time stamp
+    const uint32_t m_Seconds = 0; // The seconds of the time stamp
 };
 
 }

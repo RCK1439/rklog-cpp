@@ -2,7 +2,7 @@
 
 int main()
 {
-    rklog::ConsoleLogger logger = rklog::ConsoleLogger::Default("global");
+    rklog::ConsoleLogger logger("global");
     logger.Info("Hello, {}!", "World");
     logger.Warn("Hello, {}!", "World");
     logger.Error("Hello, {}!", "World");

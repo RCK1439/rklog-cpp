@@ -12,7 +12,7 @@
 #if defined(RKLOG_PLATFORM_WINDOWS)
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
-#ifdef ERROR // Stupid thing conflicts with LogLevel::ERROR
+#ifdef ERROR // Stupid thing conflicts with LogLevel::ERROR, idk why though
 #undef ERROR
 #endif
 #endif
@@ -40,15 +40,26 @@ namespace rklog {
 class Logger
 {
 public:
+    Logger() = delete;
+
     /**
-     * Creates a logger with a title and style
+     * Creates the base for a Logger with a title and default styling
+     *
+     * @param title
+     *      The title of the logger
+     */
+    constexpr explicit Logger(std::string_view title) noexcept :
+        m_Title(title) {}
+    
+    /**
+     * Creates a logger with a title and custom styling
      *
      * @param title
      *      The title of the logger
      * @param style
      *      The style of the log messages
      */
-    constexpr Logger(std::string_view title, LogStyle style) noexcept :
+    constexpr explicit Logger(std::string_view title, LogStyle style) noexcept :
         m_Title(title), m_Style(style) {}
 
     /**
@@ -123,8 +134,8 @@ protected:
     virtual void LogInternal(std::string_view msg, LogLevel lvl) = 0;
 
 protected:
-    std::string m_Title; // The title of the logger
-    LogStyle    m_Style; // The style of the logger
+    const std::string m_Title; // The title of the logger
+    const LogStyle    m_Style; // The style of the logger
 };
 
 // --- console logger ---------------------------------------------------------
@@ -135,16 +146,16 @@ protected:
 class ConsoleLogger final : public Logger
 {
 public:
+    ConsoleLogger() = delete;
+
     /**
-     * Creates an instance of the `ConsoleLogger`
+     * Creates an instance of the `ConsoleLogger` with default styling
      *
      * @param title
      *      The title of the logger
-     * @param style
-     *      The style of the log messages
      */
-    ConsoleLogger(std::string_view title, LogStyle style) noexcept :
-        Logger(title, style)
+    constexpr explicit ConsoleLogger(std::string_view title) noexcept :
+        Logger(title)
     {
 #if defined(RKLOG_PLATFORM_WINDOWS)
         const HANDLE hErr = GetStdHandle(STD_ERROR_HANDLE);
@@ -156,21 +167,26 @@ public:
     }
 
     /**
-     * Creates an instance of the `ConsoleLogger` with default styling
+     * Creates an instance of the `ConsoleLogger` with custom styling
      *
      * @param title
      *      The title of the logger
-     *
-     * @return
-     *      The default console logger
+     * @param style
+     *      The style of the log messages
      */
-    static inline ConsoleLogger Default(std::string_view title) noexcept
+    constexpr explicit ConsoleLogger(std::string_view title, LogStyle style) noexcept :
+        Logger(title, style)
     {
-        return ConsoleLogger(title, LogStyle::Default());
+#if defined(RKLOG_PLATFORM_WINDOWS)
+        const HANDLE hErr = GetStdHandle(STD_ERROR_HANDLE);
+        DWORD dwMode = 0;
+        GetConsoleMode(hErr, &dwMode);
+        dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+        SetConsoleMode(hErr, dwMode);
+#endif
     }
 
 protected:
-
     /**
      * Logs `msg` to `stderr` with `lvl` severity
      *
@@ -202,8 +218,21 @@ protected:
 class FileLogger final : public Logger
 {
 public:
+    FileLogger() = delete;
+
     /**
-     * Creates an instance of the `FileLogger`
+     * Creates an instance of the `FileLogger` with default styling
+     *
+     * @param fileName
+     *      The name of the file to log to
+     * @param title
+     *      The title of the logger
+     */
+    explicit FileLogger(std::string_view fileName, std::string_view title) :
+        Logger(title), m_FileHandle(fileName.data()) {}
+    
+    /**
+     * Creates an instance of the `FileLogger` with custom styling
      *
      * @param fileName
      *      The name of the file to log to
@@ -212,25 +241,10 @@ public:
      * @param style
      *      The styling of the log messages
      */
-    FileLogger(std::string_view fileName, std::string_view title, LogStyle style) :
+    explicit FileLogger(std::string_view fileName, std::string_view title, LogStyle style) :
         Logger(title, style), m_FileHandle(fileName.data()) {}
 
-    /**
-     * Creates an instance of the `FileLogger` with default styling
-     *
-     * @param title
-     *      The title of the logger
-     *
-     * @return
-     *      The default file logger
-     */
-    static inline FileLogger Default(std::string_view fileName, std::string_view title)
-    {
-        return FileLogger(fileName, title, LogStyle::Default());
-    }
-
 protected:
-
     /**
      * Logs `msg` to the file with `lvl` severity
      *
