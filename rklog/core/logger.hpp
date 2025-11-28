@@ -40,8 +40,6 @@ namespace rklog {
 class Logger
 {
 public:
-    Logger() = delete;
-
     /**
      * Creates the base for a Logger with a title and default styling
      *
@@ -146,8 +144,6 @@ protected:
 class ConsoleLogger final : public Logger
 {
 public:
-    ConsoleLogger() = delete;
-
     /**
      * Creates an instance of the `ConsoleLogger` with default styling
      *

@@ -1,6 +1,6 @@
 CXX = c++
 
-CXXFLAGS = -Wall -Wextra -Werror -Wpedantic -std=c++23 -O3
+CXXFLAGS = -Wall -Wextra -Werror -Wpedantic -std=c++23 -O0
 
 TARGET = rklog_test
 

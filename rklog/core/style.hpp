@@ -68,6 +68,7 @@ private:
     static constexpr Color RED_COLOR = Color(0xFF, 0x00, 0x00);    // Red
     static constexpr Color WHITE_COLOR = Color(0xFF, 0xFF, 0xFF);  // White
 
+private:
     const LogConfig m_CfgInfo;    // The configuration for info logs
     const LogConfig m_CfgWarning; // The configuration for warning logs
     const LogConfig m_CfgError;   // The configuration for error logs
