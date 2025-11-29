@@ -4,6 +4,8 @@
 #include "level.hpp"
 #include "platform.hpp"
 
+#include <string_view>
+
 namespace rklog {
 
 /**

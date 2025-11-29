@@ -1,12 +1,9 @@
 #pragma once
 
-#include "level.hpp"
-#include "platform.hpp"
 #include "time.hpp"
 
 #include <cstdint>
 #include <optional>
-#include <string>
 #include <string_view>
 
 namespace rklog {

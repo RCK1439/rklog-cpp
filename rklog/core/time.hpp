@@ -2,6 +2,8 @@
 
 #include "platform.hpp"
 
+#include <format>
+#include <cstdint>
 #include <chrono>
 
 namespace rklog {

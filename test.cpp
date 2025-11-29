@@ -1,5 +1,5 @@
-#define RKLOG_IMPLEMENTATION
 #include "rklog/rklog.hpp"
+
 
 int main()
 {
