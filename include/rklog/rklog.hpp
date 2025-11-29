@@ -2,6 +2,9 @@
 
 #include "core/logger.hpp"
 
+#include <string_view>
+#include <format>
+
 namespace rklog {
 
 /**

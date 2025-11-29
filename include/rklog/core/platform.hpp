@@ -29,5 +29,5 @@
 #if defined(__GNUC__) || defined(__clang__)
 #define RKLOG_UNREACHABLE() __builtin_unreachable()
 #elif defined(_MSC_VER)
-#define RKLOG_UNRKLOG_UNREACHABLE() __assume(false)
+#define RKLOG_UNREACHABLE() __assume(false)
 #endif

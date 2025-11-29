@@ -151,7 +151,7 @@ public:
      * @param title
      *      The title of the logger
      */
-    constexpr explicit ConsoleLogger(std::string_view title) noexcept :
+    explicit ConsoleLogger(std::string_view title) noexcept :
         Logger(title)
     {
 #if defined(RKLOG_PLATFORM_WINDOWS)
@@ -171,7 +171,7 @@ public:
      * @param style
      *      The style of the log messages
      */
-    constexpr explicit ConsoleLogger(std::string_view title, LogStyle style) noexcept :
+    explicit ConsoleLogger(std::string_view title, LogStyle style) noexcept :
         Logger(title, style)
     {
 #if defined(RKLOG_PLATFORM_WINDOWS)
