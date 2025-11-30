@@ -50,10 +50,10 @@ public:
     {
         switch (lvl)
         {
-            case LogLevel::INFO: return m_CfgInfo;
-            case LogLevel::WARNING: return m_CfgWarning;
-            case LogLevel::ERROR: return m_CfgError;
-            case LogLevel::FATAL: return m_CfgFatal;
+            case LogLevel::LOG_INFO: return m_CfgInfo;
+            case LogLevel::LOG_WARNING: return m_CfgWarning;
+            case LogLevel::LOG_ERROR: return m_CfgError;
+            case LogLevel::LOG_FATAL: return m_CfgFatal;
         }
 
         RKLOG_UNREACHABLE();

@@ -9,10 +9,10 @@ namespace rklog {
  */
 enum class LogLevel : uint8_t
 {
-    INFO,
-    WARNING,
-    ERROR,
-    FATAL,
+    LOG_INFO,
+    LOG_WARNING,
+    LOG_ERROR,
+    LOG_FATAL,
 };
 
 }

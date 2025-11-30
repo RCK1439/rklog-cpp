@@ -13,9 +13,6 @@
 #if defined(RKLOG_PLATFORM_WINDOWS)
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
-#ifdef ERROR // Stupid thing conflicts with LogLevel::ERROR, idk why though
-#undef ERROR
-#endif
 #endif
 
 namespace rklog {
@@ -73,7 +70,7 @@ public:
     void Info(const std::format_string<Args...> fmt, Args&& ... args)
     {
         const std::string msg = std::format(fmt, std::forward<Args>(args)...);
-        LogInternal(msg, LogLevel::INFO);
+        LogInternal(msg, LogLevel::LOG_INFO);
     }
 
     /**
@@ -88,7 +85,7 @@ public:
     void Warn(const std::format_string<Args...> fmt, Args&& ... args)
     {
         const std::string msg = std::format(fmt, std::forward<Args>(args)...);
-        LogInternal(msg, LogLevel::WARNING);
+        LogInternal(msg, LogLevel::LOG_WARNING);
     }
 
     /**
@@ -103,7 +100,7 @@ public:
     void Error(const std::format_string<Args...> fmt, Args&& ... args)
     {
         const std::string msg = std::format(fmt, std::forward<Args>(args)...);
-        LogInternal(msg, LogLevel::ERROR);
+        LogInternal(msg, LogLevel::LOG_ERROR);
     }
 
     /**
@@ -118,7 +115,7 @@ public:
     void Fatal(const std::format_string<Args...> fmt, Args&& ... args)
     {
         const std::string msg = std::format(fmt, std::forward<Args>(args)...);
-        LogInternal(msg, LogLevel::FATAL);
+        LogInternal(msg, LogLevel::LOG_FATAL);
     }
 
 protected:
