@@ -6,7 +6,7 @@ namespace rklog {
 
 std::shared_ptr<Logger> GlobalLogger::s_Logger;
 
-void GlobalLogger::InitConsole(std::string_view title)
+void GlobalLogger::InitConsole(std::string_view title) noexcept
 {
     if (s_Logger)
     {
@@ -16,7 +16,7 @@ void GlobalLogger::InitConsole(std::string_view title)
     s_Logger = std::make_shared<ConsoleLogger>(title);
 }
 
-void GlobalLogger::InitConsole(std::string_view title, LogStyle style)
+void GlobalLogger::InitConsole(std::string_view title, LogStyle style) noexcept
 {
     if (s_Logger)
     {
