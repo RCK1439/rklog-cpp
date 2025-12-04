@@ -4,23 +4,46 @@
 
 namespace rklog {
 
-std::shared_ptr<ConsoleLogger> g_GlobalLogger = nullptr;
+std::shared_ptr<Logger> GlobalLogger::s_Logger;
 
-void InitGlobalLogging(std::string_view title)
+void GlobalLogger::InitConsole(std::string_view title)
 {
-    if (!g_GlobalLogger)
+    if (s_Logger)
     {
-        g_GlobalLogger = std::make_shared<ConsoleLogger>(title);
+        return;
     }
+
+    s_Logger = std::make_shared<ConsoleLogger>(title);
 }
 
-void InitGlobalLogging(std::string_view title, LogStyle style)
+void GlobalLogger::InitConsole(std::string_view title, LogStyle style)
 {
-    if (!g_GlobalLogger)
+    if (s_Logger)
     {
-        g_GlobalLogger = std::make_shared<ConsoleLogger>(title, style);
+        return;
     }
+
+    s_Logger = std::make_shared<ConsoleLogger>(title, style);
 }
 
+void GlobalLogger::InitFile(std::filesystem::path fileName, std::string_view title)
+{
+    if (s_Logger)
+    {
+        return;
+    }
+
+    s_Logger = std::make_shared<FileLogger>(fileName, title);
+}
+
+void GlobalLogger::InitFile(std::filesystem::path fileName, std::string_view title, LogStyle style)
+{
+    if (s_Logger)
+    {
+        return;
+    }
+
+    s_Logger = std::make_shared<FileLogger>(fileName, title, style);
+}
 
 }

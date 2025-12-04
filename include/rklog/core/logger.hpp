@@ -5,6 +5,7 @@
 #include "style.hpp"
 #include "platform.hpp"
 
+#include <filesystem>
 #include <format>
 #include <fstream>
 #include <iostream>
@@ -222,8 +223,8 @@ public:
      * @param title
      *      The title of the logger
      */
-    explicit FileLogger(std::string_view fileName, std::string_view title) :
-        Logger(title), m_FileHandle(fileName.data()) {}
+    explicit FileLogger(std::filesystem::path fileName, std::string_view title) :
+        Logger(title), m_FileHandle(fileName) {}
     
     /**
      * Creates an instance of the `FileLogger` with custom styling
@@ -235,8 +236,8 @@ public:
      * @param style
      *      The styling of the log messages
      */
-    explicit FileLogger(std::string_view fileName, std::string_view title, LogStyle style) :
-        Logger(title, style), m_FileHandle(fileName.data()) {}
+    explicit FileLogger(std::filesystem::path fileName, std::string_view title, LogStyle style) :
+        Logger(title, style), m_FileHandle(fileName) {}
 
 protected:
     /**
