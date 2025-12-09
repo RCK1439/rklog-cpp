@@ -3,7 +3,6 @@
 #include "level.hpp"
 #include "time.hpp"
 #include "style.hpp"
-#include "platform.hpp"
 
 #include <filesystem>
 #include <format>
@@ -11,10 +10,6 @@
 #include <iostream>
 #include <print>
 #include <string>
-#if defined(RKLOG_PLATFORM_WINDOWS)
-#define WIN32_LEAN_AND_MEAN
-#include <Windows.h>
-#endif
 
 namespace rklog {
 
