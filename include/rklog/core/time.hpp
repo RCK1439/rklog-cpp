@@ -14,8 +14,6 @@ namespace rklog {
 class TimeStamp final
 {
 public:
-    TimeStamp() = default;
-
     /**
      * Gets the current time of the system clock
      *
@@ -76,6 +74,8 @@ public:
     }
 
 private:
+    TimeStamp() = default;
+    
     /**
      * Creates a new instance of the `TimeStamp`
      *
