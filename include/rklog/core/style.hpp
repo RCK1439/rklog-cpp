@@ -1,10 +1,8 @@
 #pragma once
 
-#include "config.hpp"
+#include "../config/config.hpp"
 #include "level.hpp"
 #include "platform.hpp"
-
-#include <string_view>
 
 namespace rklog {
 
@@ -14,31 +12,37 @@ namespace rklog {
 class LogStyle final
 {
 public:
-    /**
-     * Creates the default style for logging
-     */
-    constexpr LogStyle() noexcept :
-        m_CfgInfo(DEFAULT_INFO_TAG, GREEN_COLOR),
-        m_CfgWarning(DEFAULT_WARNING_TAG, YELLOW_COLOR),
-        m_CfgError(DEFAULT_ERROR_TAG, RED_COLOR),
-        m_CfgFatal(DEFAULT_FATAL_TAG, WHITE_COLOR, RED_COLOR)
-    {}
+    constexpr static LogStyle Create() noexcept
+    {
+        return LogStyle();
+    }
 
-    /**
-     * Creates an instance of `LogStyle` with different configurations for
-     * different log severities
-     *
-     * @param cfgInfo
-     *      The configuration for info log level
-     * @param cfgWarning
-     *      The configuration for warning log level
-     * @param cfgError
-     *      The configuration for error log level
-     * @param cfgFatal
-     *      The configuration for fatal log level
-     */
-    constexpr LogStyle(LogConfig cfgInfo, LogConfig cfgWarning, LogConfig cfgError, LogConfig cfgFatal) noexcept :
-        m_CfgInfo(cfgInfo), m_CfgWarning(cfgWarning), m_CfgError(cfgError), m_CfgFatal(cfgFatal) {}
+    template<LogLevel lvl>
+    constexpr LogStyle& SetConfig(const LogConfig& cfg) noexcept
+    {
+        switch (lvl)
+        {
+            case LogLevel::LOG_INFO:
+                m_CfgInfo = cfg;
+                break;
+            case LogLevel::LOG_WARNING:
+                m_CfgWarning = cfg;
+                break;
+            case LogLevel::LOG_ERROR:
+                m_CfgError = cfg;
+                break;
+            case LogLevel::LOG_FATAL:
+                m_CfgFatal = cfg;
+                break;
+        }
+
+        return *this;
+    }
+
+    constexpr LogStyle&& Build() noexcept
+    {
+        return std::move(*this);
+    }
 
     /**
      * Gets the configuration for `lvl`
@@ -60,21 +64,26 @@ public:
     }
 
 private:
-    static constexpr std::string_view DEFAULT_INFO_TAG = "INFO";
-    static constexpr std::string_view DEFAULT_WARNING_TAG = "WARNING";
-    static constexpr std::string_view DEFAULT_ERROR_TAG = "ERROR";
-    static constexpr std::string_view DEFAULT_FATAL_TAG = "FATAL";
-
-    static constexpr Color GREEN_COLOR = Color(0x00, 0xFF, 0x00);  // Green
-    static constexpr Color YELLOW_COLOR = Color(0xFF, 0xFF, 0x00); // Yellow
-    static constexpr Color RED_COLOR = Color(0xFF, 0x00, 0x00);    // Red
-    static constexpr Color WHITE_COLOR = Color(0xFF, 0xFF, 0xFF);  // White
+    constexpr LogStyle() = default;
 
 private:
-    const LogConfig m_CfgInfo;    // The configuration for info logs
-    const LogConfig m_CfgWarning; // The configuration for warning logs
-    const LogConfig m_CfgError;   // The configuration for error logs
-    const LogConfig m_CfgFatal;   // The configuration for fatal logs
+    LogConfig m_CfgInfo    = defaults::INFO_CFG;    // The configuration for info logs
+    LogConfig m_CfgWarning = defaults::WARNING_CFG; // The configuration for warning logs
+    LogConfig m_CfgError   = defaults::ERROR_CFG;   // The configuration for error logs
+    LogConfig m_CfgFatal   = defaults::FATAL_CFG;   // The configuration for fatal logs
+
+    friend class Logger;
 };
     
+}
+
+namespace rklog::defaults {
+
+constexpr LogStyle DEFAULT_STYLE = LogStyle::Create()
+    .SetConfig<LogLevel::LOG_INFO>(INFO_CFG)
+    .SetConfig<LogLevel::LOG_WARNING>(WARNING_CFG)
+    .SetConfig<LogLevel::LOG_ERROR>(ERROR_CFG)
+    .SetConfig<LogLevel::LOG_FATAL>(FATAL_CFG)
+    .Build();
+
 }
