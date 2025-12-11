@@ -1,4 +1,6 @@
-#include "rklog/rklog.hpp"
+#include "../include/rklog/logger/global_logger.hpp"
+#include "../include/rklog/logger/console_logger.hpp"
+#include "../include/rklog/logger/file_logger.hpp"
 
 #include <memory>
 

@@ -13,16 +13,24 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 set(rklog_SOURCES
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/rklog.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/logger.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/console_logger.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/file_logger.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/global_logger.cpp
 )
 set(rklog_HEADERS 
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/rklog/core/config.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/rklog/core/level.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/rklog/core/logger.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/rklog/config/color.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/rklog/config/config.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/rklog/config/level.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/rklog/config/style.hpp
+
     ${CMAKE_CURRENT_SOURCE_DIR}/include/rklog/core/platform.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/rklog/core/style.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/rklog/core/time.hpp
+
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/rklog/logger/console_logger.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/rklog/logger/file_logger.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/rklog/logger/logger.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/rklog/logger/global_logger.hpp
+
     ${CMAKE_CURRENT_SOURCE_DIR}/include/rklog/rklog.hpp
 )
 

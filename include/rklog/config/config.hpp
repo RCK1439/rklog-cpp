@@ -39,9 +39,6 @@ namespace rklog {
 
 // --- type definitions -------------------------------------------------------
 
-/**
- * Class representing a configuration for a specific log-level
- */
 class LogConfig final
 {
 public:
@@ -85,23 +82,11 @@ public:
         return std::move(*this);
     }
 
-    /**
-     * Generates the log label in format of `[title]:[tag]:[hrs:mins:secs]: `
-     *
-     * @return
-     *      The label of the log message
-     */
     std::string GenerateLabel(std::string_view title, const TimeStamp& ts) const
     {
         return std::format(RKLOG_FMT_LABEL, title, m_Tag, ts);
     }
 
-    /**
-     * Generates the ASCII color prelude for logging colored text
-     *
-     * @return
-     *      The ASCII color prelude
-     */
     std::string GenerateColorPrelude() const
     {
         if (m_Background.has_value())
@@ -117,9 +102,9 @@ private:
     constexpr LogConfig() = default;
 
 private:
-    std::string_view     m_Tag;                       // Tag title for the severity level
-    Color                m_Foreground;                // Background color
-    std::optional<Color> m_Background = std::nullopt; // Foreground color
+    std::string_view     m_Tag;
+    Color                m_Foreground;
+    std::optional<Color> m_Background = std::nullopt;
 
     friend class LogStyle;
 };

@@ -1,14 +1,12 @@
 #pragma once
 
-#include "../config/config.hpp"
+#include "config.hpp"
 #include "level.hpp"
-#include "platform.hpp"
+
+#include "../core/platform.hpp"
 
 namespace rklog {
 
-/**
- * Class representing the style of the log messages
- */
 class LogStyle final
 {
 public:
@@ -44,12 +42,6 @@ public:
         return std::move(*this);
     }
 
-    /**
-     * Gets the configuration for `lvl`
-     *
-     * @param lvl
-     *      The log level severity corresponding to the log configuration
-     */
     constexpr LogConfig GetConfig(LogLevel lvl) const noexcept
     {
         switch (lvl)
@@ -67,10 +59,10 @@ private:
     constexpr LogStyle() = default;
 
 private:
-    LogConfig m_CfgInfo    = defaults::INFO_CFG;    // The configuration for info logs
-    LogConfig m_CfgWarning = defaults::WARNING_CFG; // The configuration for warning logs
-    LogConfig m_CfgError   = defaults::ERROR_CFG;   // The configuration for error logs
-    LogConfig m_CfgFatal   = defaults::FATAL_CFG;   // The configuration for fatal logs
+    LogConfig m_CfgInfo    = defaults::INFO_CFG;
+    LogConfig m_CfgWarning = defaults::WARNING_CFG;
+    LogConfig m_CfgError   = defaults::ERROR_CFG;
+    LogConfig m_CfgFatal   = defaults::FATAL_CFG;
 
     friend class Logger;
 };
