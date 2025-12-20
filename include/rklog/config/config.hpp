@@ -42,46 +42,6 @@ namespace rklog {
 class LogConfig final
 {
 public:
-    constexpr static LogConfig Create() noexcept
-    {
-        return LogConfig();
-    }
-
-    constexpr LogConfig& SetTag(std::string_view tag) noexcept
-    {
-        m_Tag = tag;
-        return *this;
-    }
-
-    constexpr LogConfig& SetForegroundColor(uint8_t r, uint8_t g, uint8_t b) noexcept
-    {
-        m_Foreground = Color(r, g, b);
-        return *this;
-    }
-
-    constexpr LogConfig& SetForegroundColor(Color color) noexcept
-    {
-        m_Foreground = color;
-        return *this;
-    }
-
-    constexpr LogConfig& SetBackgroundColor(uint8_t r, uint8_t g, uint8_t b) noexcept
-    {
-        m_Background = Color(r, g, b);
-        return *this;
-    }
-
-    constexpr LogConfig& SetBackgroundColor(Color color) noexcept
-    {
-        m_Background = color;
-        return *this;
-    }
-
-    [[nodiscard]] constexpr LogConfig&& Build() noexcept
-    {
-        return std::move(*this);
-    }
-
     std::string GenerateLabel(std::string_view title, const TimeStamp& ts) const
     {
         return std::format(RKLOG_FMT_LABEL, title, m_Tag, ts);
@@ -100,6 +60,8 @@ public:
 
 private:
     constexpr LogConfig() = default;
+    constexpr LogConfig(std::string_view tag) :
+        m_Tag(tag) {}
 
 private:
     std::string_view     m_Tag;
@@ -107,7 +69,59 @@ private:
     std::optional<Color> m_Background = std::nullopt;
 
     friend class LogStyle;
+    friend class LogConfigBuilder;
 };
+
+class LogConfigBuilder
+{
+public:
+    LogConfigBuilder() = delete;
+    LogConfigBuilder(const LogConfigBuilder&) = delete;
+    LogConfigBuilder(LogConfigBuilder&&) = delete;
+
+    [[nodiscard]] constexpr LogConfigBuilder& Foreground(Color color) noexcept
+    {
+        m_Config.m_Foreground = color;
+        return *this;
+    }
+
+    [[nodiscard]] constexpr LogConfigBuilder& Foreground(uint8_t r, uint8_t g, uint8_t b) noexcept
+    {
+        m_Config.m_Foreground = Color(r, g, b);
+        return *this;
+    }
+
+    [[nodiscard]] constexpr LogConfigBuilder& Background(Color color) noexcept
+    {
+        m_Config.m_Background = color;
+        return *this;
+    }
+
+    [[nodiscard]] constexpr LogConfigBuilder& Background(uint8_t r, uint8_t g, uint8_t b) noexcept
+    {
+        m_Config.m_Background = Color(r, g, b);
+        return *this;
+    }
+
+    [[nodiscard]] constexpr LogConfig Build() noexcept
+    {
+        return m_Config;
+    }
+
+private:
+    constexpr LogConfigBuilder(std::string_view tag) :
+        m_Config(tag) {}
+
+private:
+    LogConfig m_Config;
+
+    friend constexpr LogConfigBuilder InitBuildConfig(std::string_view);
+};
+
+[[nodiscard]] constexpr LogConfigBuilder InitBuildConfig(std::string_view tag)
+{
+    return LogConfigBuilder(tag);
+}
 
 }
 
@@ -122,22 +136,17 @@ constexpr std::string_view FATAL_TAG = "FATAL";
 
 // --- configurations ---------------------------------------------------------
 
-constexpr LogConfig INFO_CFG = LogConfig::Create()
-    .SetTag(INFO_TAG)
-    .SetForegroundColor(COLOR_GREEN)
+constexpr LogConfig INFO_CFG = InitBuildConfig(INFO_TAG)
+    .Foreground(COLOR_GREEN)
     .Build();
-constexpr LogConfig WARNING_CFG = LogConfig::Create()
-    .SetTag(WARNING_TAG)
-    .SetForegroundColor(COLOR_YELLOW)
+constexpr LogConfig WARNING_CFG = InitBuildConfig(WARNING_TAG)
+    .Foreground(COLOR_YELLOW)
     .Build();
-constexpr LogConfig ERROR_CFG = LogConfig::Create()
-    .SetTag(ERROR_TAG)
-    .SetForegroundColor(COLOR_RED)
+constexpr LogConfig ERROR_CFG = InitBuildConfig(ERROR_TAG)
+    .Foreground(COLOR_RED)
     .Build();
-constexpr LogConfig FATAL_CFG = LogConfig::Create()
-    .SetTag(FATAL_TAG)
-    .SetForegroundColor(COLOR_WHITE)
-    .SetBackgroundColor(COLOR_RED)
+constexpr LogConfig FATAL_CFG = InitBuildConfig(FATAL_TAG)
+    .Foreground(COLOR_WHITE)
+    .Background(COLOR_RED)
     .Build();
-
 }
