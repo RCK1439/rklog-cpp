@@ -103,22 +103,22 @@ public:
         return *this;
     }
 
-    [[nodiscard]] constexpr LogConfig Build() noexcept
+    [[nodiscard]] constexpr LogConfig&& Build() noexcept
     {
-        return m_Config;
+        return std::move(m_Config);
     }
 
 private:
-    constexpr LogConfigBuilder(std::string_view tag) :
+    constexpr LogConfigBuilder(std::string_view tag) noexcept :
         m_Config(tag) {}
 
 private:
     LogConfig m_Config;
 
-    friend constexpr LogConfigBuilder InitBuildConfig(std::string_view);
+    friend constexpr LogConfigBuilder InitBuildConfig(std::string_view) noexcept;
 };
 
-[[nodiscard]] constexpr LogConfigBuilder InitBuildConfig(std::string_view tag)
+[[nodiscard]] constexpr LogConfigBuilder InitBuildConfig(std::string_view tag) noexcept
 {
     return LogConfigBuilder(tag);
 }
