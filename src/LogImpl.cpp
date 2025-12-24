@@ -105,4 +105,16 @@ void FileLogger::LogInternal(std::string_view msg, LogLevel level)
     }
 }
 
+ColorLogger& GetColorLogger(std::string_view title = "global")
+{
+    static ColorLogger colorLogger(title);
+    return colorLogger;
+}
+
+BasicLogger& GetBasicLogger(std::string_view title = "global")
+{
+    static BasicLogger basicLogger(title);
+    return basicLogger;
+}
+
 }
