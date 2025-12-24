@@ -2,6 +2,7 @@
 
 #include "rklog/Logger/BasicLogger.hpp"
 #include "rklog/Logger/ColorLogger.hpp"
+#include "rklog/Logger/FileLogger.hpp"
 
 #include "rklog/Core/Platform.hpp"
 #include "rklog/Core/Time.hpp"
@@ -32,56 +33,76 @@ static void EnableVirtualConsole()
 
 namespace rklog {
 
+static std::string BuildLogMessage(std::optional<std::string> title, const LogConfig& cfg, std::string_view msg)
+{
+    const TimeStamp ts = TimeStamp::Now();
+
+    std::string logMessage = title.has_value() ? std::format("[{}]:", title.value()) : "";
+    logMessage += std::format("[{}]:[{}]: {}", cfg.GetTag(), ts, msg);
+
+    return logMessage;
+}
+
+static std::string ColorizeString(std::optional<Color> fg, std::optional<Color> bg, std::string_view str)
+{
+    std::string colorCode;
+    
+    bool fgColored = false;
+    if (fg.has_value())
+    {
+        const auto color = fg.value();
+        colorCode += std::format("\033[38;2;{};{};{}", color.r, color.g, color.b);
+        fgColored = true;
+    }
+
+    if (bg.has_value())
+    {
+        const auto color = bg.value();
+        colorCode += std::format(";48;2;{};{};{}m", color.r, color.g, color.b);
+    }
+    else if (fgColored)
+    {
+        colorCode += 'm';
+    }
+
+    return std::format("{}{}{}", colorCode, str, "\033[0m");
+}
+
 void BasicLogger::LogInternal(std::string_view msg, LogLevel level)
 {
-    std::string logMessage = m_Title.has_value() ? std::format("[{}]:", m_Title.value()) : "";
     const auto cfg = m_Style.GetConfig(level);
-    
-    const auto tag = cfg.GetTag();
-    logMessage += std::format("[{}]:", tag);
-
-    const auto timeStamp = TimeStamp::Now();
-    logMessage += std::format("[{}]: {}", timeStamp, msg);
+    const auto logMessage = BuildLogMessage(m_Title, cfg, msg);
 
     std::println(std::cerr, "{}", logMessage);
 }
 
 void ColorLogger::LogInternal(std::string_view msg, LogLevel level)
 {
-    std::string logMessage;
     const auto cfg = m_Style.GetConfig(level);
-
-    bool fgColored = false;
-    if (const auto fgColor = cfg.GetForegroundColor())
-    {
-        const auto color = fgColor.value();
-        logMessage += std::format("\033[38;2;{};{};{}", color.r, color.g, color.b);
-        fgColored = true;
-    }
-
-    if (const auto bgColor = cfg.GetBackgroundColor())
-    {
-        const auto color = bgColor.value();
-        logMessage += std::format(";48;2;{};{};{}m", color.r, color.g, color.b);
-    }
-    else if (fgColored)
-    {
-        logMessage += 'm';
-    }
-
-    logMessage += m_Title.has_value() ? std::format("[{}]:", m_Title.value()) : "";
-
-    const auto tag = cfg.GetTag();
-    logMessage += std::format("[{}]:", tag);
-
-    const auto timeStamp = TimeStamp::Now();
-    logMessage += std::format("[{}]: {}\033[0m", timeStamp, msg);
+    const auto logMessage = BuildLogMessage(m_Title, cfg, msg);
+    const auto coloredLogMessage = ColorizeString(cfg.GetForegroundColor(), cfg.GetBackgroundColor(), logMessage);
 
 #if defined(RKLOG_PLATFORM_WINDOWS)
     EnableVirtualConsole();
 #endif
 
-    std::println(std::cerr, "{}", logMessage);
+    std::println(std::cerr, "{}", coloredLogMessage);
 }
+
+void FileLogger::LogInternal(std::string_view msg, LogLevel level)
+{
+    const auto cfg = m_Style.GetConfig(level);
+    const auto logMessage = BuildLogMessage(m_Title, cfg, msg);
+    std::println(m_FileHandle, "{}", logMessage);
     
+    if (m_WriteToStdErr)
+    {
+#if defined(RKLOG_PLATFORM_WINDOWS)
+        EnableVirtualConsole();
+#endif
+        const auto coloredLogMessage = ColorizeString(cfg.GetForegroundColor(), cfg.GetBackgroundColor(), logMessage);
+        std::println(std::cerr, "{}", coloredLogMessage);
+    }
+}
+
 }
