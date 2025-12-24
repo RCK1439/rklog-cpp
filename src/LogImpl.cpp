@@ -117,4 +117,10 @@ BasicLogger& GetBasicLogger(std::string_view title = "global")
     return basicLogger;
 }
 
+FileLogger& GetFileLogger(std::filesystem::path filePath, std::string_view title = "global")
+{
+    static FileLogger fileLogger(filePath, title);
+    return fileLogger;
+}
+
 }
