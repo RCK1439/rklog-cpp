@@ -19,6 +19,7 @@ int main()
 }
 ```
 This yields the following:
+
 ![basic_logger](resources/basic_logger.png)
 
 ### Color Logger
@@ -36,6 +37,7 @@ int main()
 }
 ```
 Yields the following:
+
 ![color_logger](resources/color_logger.png)
 
 ### Global Logger
@@ -52,6 +54,7 @@ int main()
 }
 ```
 Yields the following:
+
 ![global_logger](resources/global_logger.png)
 
 **Note:** The presence of `global` in the output is considered the title of the logger. Each logger can optionally have a title.
