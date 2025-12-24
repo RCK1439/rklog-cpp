@@ -8,9 +8,18 @@
 
 namespace rklog {
 
+/**
+ * Class containing the timestamp data of each log
+ */
 class TimeStamp final
 {
 public:
+    /**
+     * Queries the system clock for the current time
+     *
+     * @return
+     *      The current time
+     */
     static TimeStamp Now() noexcept
     {
         const std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
@@ -31,16 +40,34 @@ public:
 #endif
     }
 
+    /**
+     * Gets the hours from the timestamp
+     *
+     * @return
+     *      The number of hours
+     */
     inline uint32_t Hours() const noexcept
     {
         return m_Hours;
     }
 
+    /**
+     * Gets the minutes from the timestamp
+     *
+     * @return
+     *      The number of minutes
+     */
     inline uint32_t Minutes() const noexcept
     {
         return m_Minutes;
     }
 
+    /**
+     * Gets the seconds from the timestamp
+     *
+     * @return
+     *      The number of seconds
+     */
     inline uint32_t Seconds() const noexcept
     {
         return m_Seconds;
@@ -49,12 +76,25 @@ public:
 private:
     TimeStamp() = default;
 
+    /**
+     * Creates a new instance of a timestamp
+     *
+     * @param[in] hours
+     *      The hours of the timestamp
+     * @param[in] minutes
+     *      The minutes of the timestamp
+     * @param[in] seconds
+     *      The seconds of the timestamp
+     */
     constexpr explicit TimeStamp(uint32_t hours, uint32_t minutes, uint32_t seconds) noexcept :
         m_Hours(hours), m_Minutes(minutes), m_Seconds(seconds) {}
 
 private:
+    /// The number of hours
     const uint32_t m_Hours = 0;
+    /// The number of minutes
     const uint32_t m_Minutes = 0;
+    /// The number of seconds
     const uint32_t m_Seconds = 0;
 };
 
