@@ -4,15 +4,30 @@
 
 namespace rklog {
 
+/**
+ * Struct containing color data for color logging using true color
+ */
 struct Color final
 {
 public:
-    uint8_t r = 0x00;
-    uint8_t g = 0x00;
-    uint8_t b = 0x00;
+    uint8_t r = 0x00; // The red channel
+    uint8_t g = 0x00; // The green channel
+    uint8_t b = 0x00; // The blue channel
 
 public:
     constexpr Color() = default;
+
+    /**
+     * Creates a new instance of the color struct with defined values for the
+     * color channels
+     *
+     * @param[in] r
+     *      The value of the red channel
+     * @param[in] g
+     *      The value of the green channel
+     * @param[in] b
+     *      The value of the blue channel
+     */
     constexpr Color(uint8_t r, uint8_t g, uint8_t b) noexcept :
         r(r), g(g), b(b) {}
 };
