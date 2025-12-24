@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Config/Level.hpp"
+#include "../Config/Style.hpp"
 
 #include <format>
 #include <optional>
@@ -14,6 +15,10 @@ public:
     constexpr Logger() = default;
     constexpr Logger(std::string_view title) noexcept :
         m_Title(title) {}
+    constexpr Logger(LogStyle style) noexcept :
+        m_Style(style) {}
+    constexpr Logger(std::string_view title, LogStyle style) noexcept :
+        m_Title(title), m_Style(style) {}
 
     template<typename ... Args>
     void Debug(const std::format_string<Args...> fmt, Args&& ... args)
@@ -55,6 +60,7 @@ protected:
 
 protected:
     std::optional<std::string> m_Title = std::nullopt;
+    LogStyle                   m_Style = defaults::DEFAULT_STYLE;
 };
 
 }
