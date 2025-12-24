@@ -1,18 +1,17 @@
 #pragma once
 
-#include "config.hpp"
+#include "Config.hpp"
 
-#include "../core/platform.hpp"
+#include "../Core/Platform.hpp"
 
 namespace rklog {
 
 class LogStyle final
 {
 public:
-    template<LogLevel TLevel>
-    constexpr LogConfig<TLevel> GetConfig() const noexcept
+    constexpr const LogConfig& GetConfig(LogLevel lvl) const noexcept
     {
-        switch (TLevel)
+        switch (lvl)
         {
             case LogLevel::LOG_DEBUG: return m_CfgDebug;
             case LogLevel::LOG_INFO: return m_CfgInfo;
@@ -28,11 +27,11 @@ private:
     constexpr LogStyle() = default;
 
 private:
-    LogConfig<LogLevel::LOG_DEBUG> m_CfgDebug = defaults::DEBUG_CFG;
-    LogConfig<LogLevel::LOG_INFO> m_CfgInfo    = defaults::INFO_CFG;
-    LogConfig<LogLevel::LOG_WARNING> m_CfgWarning = defaults::WARNING_CFG;
-    LogConfig<LogLevel::LOG_ERROR> m_CfgError   = defaults::ERROR_CFG;
-    LogConfig<LogLevel::LOG_FATAL> m_CfgFatal   = defaults::FATAL_CFG;
+    LogConfig m_CfgDebug   = defaults::DEBUG_CFG;
+    LogConfig m_CfgInfo    = defaults::INFO_CFG;
+    LogConfig m_CfgWarning = defaults::WARNING_CFG;
+    LogConfig m_CfgError   = defaults::ERROR_CFG;
+    LogConfig m_CfgFatal   = defaults::FATAL_CFG;
 
     friend class LogStyleBuilder;
     friend class Logger;
@@ -44,34 +43,28 @@ public:
     LogStyleBuilder(const LogStyleBuilder&) = delete;
     LogStyleBuilder(LogStyleBuilder&&) = delete;
 
-    [[nodiscard]] constexpr LogStyleBuilder& SetDebugConfig(const LogConfig<LogLevel::LOG_DEBUG>& cfg) noexcept
+    [[nodiscard]] constexpr LogStyleBuilder& SetConfig(const LogConfig& cfg) noexcept
     {
-        m_Style.m_CfgDebug = cfg;
-        return *this;
-    }
+        switch (cfg.GetLevel())
+        {
+            case LogLevel::LOG_DEBUG:
+                m_Style.m_CfgDebug = cfg;
+                return *this;
+            case LogLevel::LOG_INFO:
+                m_Style.m_CfgInfo = cfg;
+                return *this;
+            case LogLevel::LOG_WARNING:
+                m_Style.m_CfgWarning = cfg;
+                return *this;
+            case LogLevel::LOG_ERROR:
+                m_Style.m_CfgError = cfg;
+                return *this;
+            case LogLevel::LOG_FATAL:
+                m_Style.m_CfgFatal = cfg;
+                return *this;
+        }
 
-    [[nodiscard]] constexpr LogStyleBuilder& SetInfoConfig(const LogConfig<LogLevel::LOG_INFO>& cfg) noexcept
-    {
-        m_Style.m_CfgInfo = cfg;
-        return *this;
-    }
-
-    [[nodiscard]] constexpr LogStyleBuilder& SetWarningConfig(const LogConfig<LogLevel::LOG_WARNING>& cfg) noexcept
-    {
-        m_Style.m_CfgWarning = cfg;
-        return *this;
-    }
-
-    [[nodiscard]] constexpr LogStyleBuilder& SetErrorConfig(const LogConfig<LogLevel::LOG_ERROR>& cfg) noexcept
-    {
-        m_Style.m_CfgError = cfg;
-        return *this;
-    }
-
-    [[nodiscard]] constexpr LogStyleBuilder& SetFatalConfig(const LogConfig<LogLevel::LOG_FATAL>& cfg) noexcept
-    {
-        m_Style.m_CfgFatal = cfg;
-        return *this;
+        RKLOG_UNREACHABLE();
     }
 
     [[nodiscard]] constexpr LogStyle&& Build() noexcept
@@ -98,11 +91,11 @@ private:
 namespace rklog::defaults {
 
 constexpr LogStyle DEFAULT_STYLE = InitBuildStyle()
-    .SetDebugConfig(DEBUG_CFG)
-    .SetInfoConfig(INFO_CFG)
-    .SetWarningConfig(WARNING_CFG)
-    .SetErrorConfig(ERROR_CFG)
-    .SetFatalConfig(FATAL_CFG)
+    .SetConfig(DEBUG_CFG)
+    .SetConfig(INFO_CFG)
+    .SetConfig(WARNING_CFG)
+    .SetConfig(ERROR_CFG)
+    .SetConfig(FATAL_CFG)
     .Build();
 
 }

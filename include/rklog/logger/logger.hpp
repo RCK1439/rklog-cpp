@@ -1,34 +1,26 @@
 #pragma once
 
-#include "../config/style.hpp"
+#include "../Config/Style.hpp"
 
+#include <format>
+#include <optional>
 #include <string>
 
 namespace rklog {
 
-// --- format specifiers ------------------------------------------------------
-
-#define RKLOG_FMT_COLOR_OUTPUT "{}{}{}" RKLOG_ESC_CODE_RESET
-//                               | | |
-//                               | | log message
-//                               | log label
-//                               log prelude
-
-#define RKLOG_FMT_OUTPUT "{}{}"
-//                         | |
-//                         | log message
-//                         log label
-
-// --- type definitions -------------------------------------------------------
-
 class Logger
 {
 public:
-    constexpr explicit Logger(std::string_view title) noexcept :
+    constexpr Logger() = default;
+    constexpr Logger(std::string_view title) noexcept :
         m_Title(title) {}
 
-    constexpr explicit Logger(std::string_view title, LogStyle style) noexcept :
-        m_Title(title), m_Style(style) {}
+    template<typename ... Args>
+    void Debug(const std::format_string<Args...> fmt, Args&& ... args)
+    {
+        const std::string msg = std::format(fmt, std::forward<Args>(args)...);
+        LogInternal(msg, LogLevel::LOG_DEBUG);
+    }
 
     template<typename ... Args>
     void Info(const std::format_string<Args...> fmt, Args&& ... args)
@@ -62,8 +54,7 @@ protected:
     virtual void LogInternal(std::string_view msg, LogLevel lvl) = 0;
 
 protected:
-    const std::string m_Title;
-    const LogStyle    m_Style;
+    std::optional<std::string> m_Title = std::nullopt;
 };
 
 }

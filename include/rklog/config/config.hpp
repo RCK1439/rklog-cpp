@@ -1,9 +1,9 @@
 #pragma once
 
-#include "color.hpp"
-#include "level.hpp"
+#include "Color.hpp"
+#include "Level.hpp"
 
-#include "rklog/core/platform.hpp"
+#include "../Core/Platform.hpp"
 
 #include <optional>
 #include <string_view>
@@ -40,23 +40,22 @@ namespace rklog {
 
 // --- type definitions -------------------------------------------------------
 
-template<LogLevel TLevel>
 class LogConfig final
 {
 public:
     constexpr LogLevel GetLevel() const noexcept
     {
-        return TLevel;
+        return m_Level;
     }
 
     constexpr std::string_view GetTag() const noexcept
     {
-        if constexpr (m_Tag.has_value())
+        if (m_Tag.has_value())
         {
             return m_Tag.value();
         }
 
-        switch (TLevel)
+        switch (m_Level)
         {
             case LogLevel::LOG_DEBUG:
                 return "DEBUG";
@@ -84,96 +83,91 @@ public:
     }
 
 private:
-    constexpr LogConfig() = default;
+    constexpr LogConfig(LogLevel level) noexcept :
+        m_Level(level) {}
 
 private:
+    LogLevel                        m_Level;
     std::optional<std::string_view> m_Tag = std::nullopt;
     std::optional<Color>            m_Foreground = std::nullopt;
     std::optional<Color>            m_Background = std::nullopt;
 
-    template<LogLevel>
     friend class LogConfigBuilder;
 };
 
-template<LogLevel TLevel>
 class LogConfigBuilder final
 {
 public:
-    using Builder = LogConfigBuilder<TLevel>;
-    using Config = LogConfig<TLevel>;
+    LogConfigBuilder(const LogConfigBuilder&) = delete;
+    LogConfigBuilder(LogConfigBuilder&&) = delete;
 
-public:
-    LogConfigBuilder(const Builder&) = delete;
-    LogConfigBuilder(Builder&&) = delete;
-
-    [[nodiscard]] constexpr Builder& SetTag(std::string_view tag) noexcept
+    [[nodiscard]] constexpr LogConfigBuilder& SetTag(std::string_view tag) noexcept
     {
         m_Config.m_Tag = tag;
         return *this;
     }
 
-    [[nodiscard]] constexpr Builder& SetForeground(Color color) noexcept
+    [[nodiscard]] constexpr LogConfigBuilder& SetForeground(Color color) noexcept
     {
         m_Config.m_Foreground = color;
         return *this;
     }
 
-    [[nodiscard]] constexpr Builder& SetForeground(uint8_t r, uint8_t g, uint8_t b) noexcept
+    [[nodiscard]] constexpr LogConfigBuilder& SetForeground(uint8_t r, uint8_t g, uint8_t b) noexcept
     {
         m_Config.m_Foreground = Color(r, g, b);
         return *this;
     }
 
-    [[nodiscard]] constexpr Builder& SetBackground(Color color) noexcept
+    [[nodiscard]] constexpr LogConfigBuilder& SetBackground(Color color) noexcept
     {
         m_Config.m_Background = color;
         return *this;
     }
 
-    [[nodiscard]] constexpr Builder& SetBackground(uint8_t r, uint8_t g, uint8_t b) noexcept
+    [[nodiscard]] constexpr LogConfigBuilder& SetBackground(uint8_t r, uint8_t g, uint8_t b) noexcept
     {
         m_Config.m_Background = Color(r, g, b);
         return *this;
     }
 
-    [[nodiscard]] constexpr Config&& Build() noexcept
+    [[nodiscard]] constexpr LogConfig&& Build() noexcept
     {
         return std::move(m_Config);
     }
 
 private:
-    constexpr LogConfigBuilder() = default;
+    constexpr LogConfigBuilder(LogLevel level) noexcept :
+        m_Config(level) {}
 
 private:
-    Config m_Config;
+    LogConfig m_Config;
 
-    template<LogLevel L>
-    friend constexpr LogConfigBuilder<L> InitBuildConfig() noexcept;
+    friend constexpr LogConfigBuilder InitBuildConfig(LogLevel) noexcept;
 };
 
-template<LogLevel TLevel>
-[[nodiscard]] constexpr LogConfigBuilder<TLevel> InitBuildConfig() noexcept
+[[nodiscard]] constexpr LogConfigBuilder InitBuildConfig(LogLevel level) noexcept
 {
-    return LogConfigBuilder<TLevel>();
+    return LogConfigBuilder(level);
 }
 
 }
 
 namespace rklog::defaults {
 
-constexpr auto DEBUG_CFG = InitBuildConfig<LogLevel::LOG_DEBUG>()
+constexpr auto DEBUG_CFG = InitBuildConfig(LogLevel::LOG_DEBUG)
     .SetForeground(COLOR_BLUE)
     .Build();
-constexpr auto INFO_CFG = InitBuildConfig<LogLevel::LOG_INFO>()
+constexpr auto INFO_CFG = InitBuildConfig(LogLevel::LOG_INFO)
     .SetForeground(COLOR_GREEN)
     .Build();
-constexpr auto WARNING_CFG = InitBuildConfig<LogLevel::LOG_WARNING>()
+constexpr auto WARNING_CFG = InitBuildConfig(LogLevel::LOG_WARNING)
     .SetForeground(COLOR_YELLOW)
     .Build();
-constexpr auto ERROR_CFG = InitBuildConfig<LogLevel::LOG_ERROR>()
+constexpr auto ERROR_CFG = InitBuildConfig(LogLevel::LOG_ERROR)
     .SetForeground(COLOR_RED)
     .Build();
-constexpr auto FATAL_CFG = InitBuildConfig<LogLevel::LOG_FATAL>()
+constexpr auto FATAL_CFG = InitBuildConfig(LogLevel::LOG_FATAL)
     .SetForeground(COLOR_WHITE)
     .SetBackground(COLOR_RED)
     .Build();
