@@ -6,7 +6,7 @@
 
 namespace rklog {
 
-ColorLogger& GetColorLogger(std::string_view title = "global");
-BasicLogger& GetBasicLogger(std::string_view title = "global");
+ColorLogger& GetColorLogger(std::string_view title = "global") noexcept;
+BasicLogger& GetBasicLogger(std::string_view title = "global") noexcept;
 
 }

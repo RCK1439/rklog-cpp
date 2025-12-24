@@ -34,10 +34,9 @@ private:
     LogConfig m_CfgFatal   = defaults::FATAL_CFG;
 
     friend class LogStyleBuilder;
-    friend class Logger;
 };
 
-class LogStyleBuilder
+class LogStyleBuilder final
 {
 public:
     LogStyleBuilder(const LogStyleBuilder&) = delete;

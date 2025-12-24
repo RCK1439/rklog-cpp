@@ -88,9 +88,9 @@ private:
 
 private:
     LogLevel                        m_Level;
-    std::optional<std::string_view> m_Tag = std::nullopt;
     std::optional<Color>            m_Foreground = std::nullopt;
     std::optional<Color>            m_Background = std::nullopt;
+    std::optional<std::string_view> m_Tag = std::nullopt;
 
     friend class LogConfigBuilder;
 };

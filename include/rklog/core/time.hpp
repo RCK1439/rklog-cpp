@@ -18,7 +18,7 @@ public:
 
 #if defined(RKLOG_PLATFORM_WINDOWS)
         std::tm localTime;
-        const errno_t err = localtime_s(&localTime, &cNow);
+        const ::errno_t err = ::localtime_s(&localTime, &cNow);
         if (err == 0)
         {
             return TimeStamp(static_cast<uint32_t>(localTime.tm_hour), static_cast<uint32_t>(localTime.tm_min), static_cast<uint32_t>(localTime.tm_sec));

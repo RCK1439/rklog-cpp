@@ -33,37 +33,46 @@ static void EnableVirtualConsole()
 
 namespace rklog {
 
-static std::string BuildLogMessage(std::optional<std::string> title, const LogConfig& cfg, std::string_view msg)
+static std::string BuildLogMessage(const std::optional<std::string>& loggerTitle, const LogConfig& cfg, std::string_view msg)
 {
-    const TimeStamp ts = TimeStamp::Now();
+    const auto tag = cfg.GetTag();
+    const auto ts = TimeStamp::Now();
 
-    std::string logMessage = title.has_value() ? std::format("[{}]:", title.value()) : "";
-    logMessage += std::format("[{}]:[{}]: {}", cfg.GetTag(), ts, msg);
-
-    return logMessage;
+    if (loggerTitle.has_value())
+    {
+        const auto title = loggerTitle.value();
+        return std::format("[{}]:[{}]:[{}]: {}", title, tag, ts, msg);
+    }
+    else
+    {
+        return std::format("[{}]:[{}]: {}", tag, ts, msg);
+    }
 }
 
 static std::string ColorizeString(std::optional<Color> fg, std::optional<Color> bg, std::string_view str)
 {
-    std::string colorCode;
+    std::string colorCode = "\033[";
     
     bool fgColored = false;
     if (fg.has_value())
     {
-        const auto color = fg.value();
-        colorCode += std::format("\033[38;2;{};{};{}", color.r, color.g, color.b);
+        const Color color = fg.value();
+        colorCode += std::format("38;2;{};{};{}", color.r, color.g, color.b);
         fgColored = true;
     }
 
     if (bg.has_value())
     {
-        const auto color = bg.value();
-        colorCode += std::format(";48;2;{};{};{}m", color.r, color.g, color.b);
+        if (fgColored)
+        {
+            colorCode += ';';
+        }
+
+        const Color color = bg.value();
+        colorCode += std::format("48;2;{};{};{}", color.r, color.g, color.b);
     }
-    else if (fgColored)
-    {
-        colorCode += 'm';
-    }
+
+    colorCode += 'm';
 
     return std::format("{}{}{}", colorCode, str, "\033[0m");
 }
@@ -105,22 +114,16 @@ void FileLogger::LogInternal(std::string_view msg, LogLevel level)
     }
 }
 
-ColorLogger& GetColorLogger(std::string_view title = "global")
+ColorLogger& GetColorLogger(std::string_view title = "global") noexcept
 {
     static ColorLogger colorLogger(title);
     return colorLogger;
 }
 
-BasicLogger& GetBasicLogger(std::string_view title = "global")
+BasicLogger& GetBasicLogger(std::string_view title = "global") noexcept
 {
     static BasicLogger basicLogger(title);
     return basicLogger;
-}
-
-FileLogger& GetFileLogger(std::filesystem::path filePath, std::string_view title = "global")
-{
-    static FileLogger fileLogger(filePath, title);
-    return fileLogger;
 }
 
 }
