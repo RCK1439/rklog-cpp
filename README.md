@@ -18,7 +18,8 @@ int main()
     logger.Fatal("All your terminals are belong to {}!", "us");
 }
 ```
-This yields the following results: ![basic_logger](resources/basic_logger.png)
+This yields the following:
+![basic_logger](resources/basic_logger.png)
 
 ### Color Logger
 ```cpp
@@ -34,7 +35,8 @@ int main()
     logger.Fatal("All your terminals are belong to {}!", "us");
 }
 ```
-Yields the following: ![color_logger](resources/color_logger.png)
+Yields the following:
+![color_logger](resources/color_logger.png)
 
 ### Global Logger
 ```cpp
@@ -49,7 +51,8 @@ int main()
     rklog::GetColorLogger().Fatal("All your terminals are belong to {}!", "us");
 }
 ```
-Yields the following: ![global_logger](resources/global_logger.png)
+Yields the following:
+![global_logger](resources/global_logger.png)
 
 **Note:** The presence of `global` in the output is considered the title of the logger. Each logger can optionally have a title.
 
