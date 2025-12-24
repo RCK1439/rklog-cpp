@@ -49,32 +49,39 @@ static std::string BuildLogMessage(const std::optional<std::string>& loggerTitle
     }
 }
 
-static std::string ColorizeString(std::optional<Color> fg, std::optional<Color> bg, std::string_view str)
+static std::optional<std::string> BuildColorCode(std::optional<Color> fg, std::optional<Color> bg)
 {
-    std::string colorCode = "\033[";
-    
-    bool fgColored = false;
-    if (fg.has_value())
+    if (fg.has_value() && bg.has_value())
     {
-        const Color color = fg.value();
-        colorCode += std::format("38;2;{};{};{}", color.r, color.g, color.b);
-        fgColored = true;
+        const Color fgColor = fg.value();
+        const Color bgColor = bg.value();
+        return std::format("\033[38;2;{};{};{};48;2;{};{};{}m", fgColor.r, fgColor.g, fgColor.b, bgColor.r, bgColor.g, bgColor.b);
+    }
+    else if (fg.has_value())
+    {
+        const Color fgColor = fg.value();
+        return std::format("\033[38;2;{};{};{}m", fgColor.r, fgColor.g, fgColor.b);
+    }
+    else if (bg.has_value())
+    {
+        const Color bgColor = bg.value();
+        return std::format("\033[48;2;{};{};{}m", bgColor.r, bgColor.g, bgColor.b);
     }
 
-    if (bg.has_value())
-    {
-        if (fgColored)
-        {
-            colorCode += ';';
-        }
+    return std::nullopt;
+}
 
-        const Color color = bg.value();
-        colorCode += std::format("48;2;{};{};{}", color.r, color.g, color.b);
+static std::string ColorizeString(std::string_view str, std::optional<Color> fg, std::optional<Color> bg)
+{
+    constexpr std::string_view ANSI_RESET = "\033[0m";
+
+    if (const auto colorCode = BuildColorCode(fg, bg))
+    {
+        const auto ansiColor = colorCode.value();
+        return std::format("{}{}{}", ansiColor, str, ANSI_RESET);
     }
 
-    colorCode += 'm';
-
-    return std::format("{}{}{}", colorCode, str, "\033[0m");
+    return str.data();
 }
 
 void BasicLogger::LogInternal(std::string_view msg, LogLevel level)
@@ -89,7 +96,7 @@ void ColorLogger::LogInternal(std::string_view msg, LogLevel level)
 {
     const auto cfg = m_Style.GetConfig(level);
     const auto logMessage = BuildLogMessage(m_Title, cfg, msg);
-    const auto coloredLogMessage = ColorizeString(cfg.GetForegroundColor(), cfg.GetBackgroundColor(), logMessage);
+    const auto coloredLogMessage = ColorizeString(logMessage, cfg.GetForegroundColor(), cfg.GetBackgroundColor());
 
 #if defined(RKLOG_PLATFORM_WINDOWS)
     EnableVirtualConsole();
@@ -109,7 +116,7 @@ void FileLogger::LogInternal(std::string_view msg, LogLevel level)
 #if defined(RKLOG_PLATFORM_WINDOWS)
         EnableVirtualConsole();
 #endif
-        const auto coloredLogMessage = ColorizeString(cfg.GetForegroundColor(), cfg.GetBackgroundColor(), logMessage);
+        const auto coloredLogMessage = ColorizeString(logMessage, cfg.GetForegroundColor(), cfg.GetBackgroundColor());
         std::println(std::cerr, "{}", coloredLogMessage);
     }
 }
