@@ -1,5 +1,3 @@
-#pragma once
-
 #include "rklog/Logger/BasicLogger.hpp"
 #include "rklog/Logger/ColorLogger.hpp"
 #include "rklog/Logger/FileLogger.hpp"
