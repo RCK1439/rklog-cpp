@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Config/Style.hpp"
+#include "../Config/Level.hpp"
 
 #include <format>
 #include <optional>
@@ -51,7 +51,7 @@ public:
     }
 
 protected:
-    virtual void LogInternal(std::string_view msg, LogLevel lvl) = 0;
+    virtual void LogInternal(std::string_view msg, LogLevel level) = 0;
 
 protected:
     std::optional<std::string> m_Title = std::nullopt;

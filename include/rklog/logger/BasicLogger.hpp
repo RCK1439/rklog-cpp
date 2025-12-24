@@ -2,6 +2,8 @@
 
 #include "Logger.hpp"
 
+#include "../Config/Style.hpp"
+
 namespace rklog {
 
 class BasicLogger final : public Logger
@@ -17,7 +19,7 @@ public:
         Logger(title), m_Style(style) {}
 
 protected:
-    virtual void LogInternal(std::string_view msg, LogLevel lvl) override;
+    virtual void LogInternal(std::string_view msg, LogLevel level) override;
 
 private:
     LogStyle m_Style = defaults::DEFAULT_STYLE;
