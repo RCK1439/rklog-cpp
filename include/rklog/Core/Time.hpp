@@ -46,10 +46,7 @@ public:
      * @return
      *      The number of hours
      */
-    inline uint32_t Hours() const noexcept
-    {
-        return m_Hours;
-    }
+    inline uint32_t Hours() const noexcept { return m_Hours; }
 
     /**
      * Gets the minutes from the timestamp
@@ -57,10 +54,7 @@ public:
      * @return
      *      The number of minutes
      */
-    inline uint32_t Minutes() const noexcept
-    {
-        return m_Minutes;
-    }
+    inline uint32_t Minutes() const noexcept { return m_Minutes; }
 
     /**
      * Gets the seconds from the timestamp
@@ -68,13 +62,10 @@ public:
      * @return
      *      The number of seconds
      */
-    inline uint32_t Seconds() const noexcept
-    {
-        return m_Seconds;
-    }
+    inline uint32_t Seconds() const noexcept { return m_Seconds; }
 
 private:
-    TimeStamp() = default;
+    constexpr TimeStamp() = default;
 
     /**
      * Creates a new instance of a timestamp
@@ -91,11 +82,11 @@ private:
 
 private:
     /// The number of hours
-    const uint32_t m_Hours = 0;
+    const uint32_t m_Hours{};
     /// The number of minutes
-    const uint32_t m_Minutes = 0;
+    const uint32_t m_Minutes{};
     /// The number of seconds
-    const uint32_t m_Seconds = 0;
+    const uint32_t m_Seconds{};
 };
 
 }

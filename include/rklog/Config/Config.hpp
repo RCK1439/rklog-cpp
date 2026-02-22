@@ -22,10 +22,7 @@ public:
      * @return
      *      The log level for this log configuration
      */
-    constexpr LogLevel GetLevel() const noexcept
-    {
-        return m_Level;
-    }
+    constexpr LogLevel GetLevel() const noexcept { return m_Level; }
 
     /**
      * Gets the tag for the log level
@@ -35,10 +32,8 @@ public:
      */
     constexpr std::string_view GetTag() const noexcept
     {
-        if (m_Tag.has_value())
-        {
-            return m_Tag.value();
-        }
+        if (m_Tag)
+            return *m_Tag;
 
         switch (m_Level)
         {
@@ -63,10 +58,7 @@ public:
      * @return
      *      The foreground color data
      */
-    constexpr std::optional<Color> GetForegroundColor() const noexcept
-    {
-        return m_Foreground;
-    }
+    constexpr std::optional<Color> GetForegroundColor() const noexcept { return m_Foreground; }
 
     /**
      * Gets the background color of the log level
@@ -74,10 +66,7 @@ public:
      * @return
      *      The background color data
      */
-    constexpr std::optional<Color> GetBackgroundColor() const noexcept
-    {
-        return m_Background;
-    }
+    constexpr std::optional<Color> GetBackgroundColor() const noexcept { return m_Background; }
 
 private:
     /**
@@ -91,13 +80,13 @@ private:
 
 private:
     /// The log level
-    LogLevel m_Level;
+    LogLevel m_Level{};
     /// The foreground color data
-    std::optional<Color> m_Foreground = std::nullopt;
+    std::optional<Color> m_Foreground{};
     /// The background color data
-    std::optional<Color> m_Background = std::nullopt;
+    std::optional<Color> m_Background{};
     /// The tag for the log level
-    std::optional<std::string_view> m_Tag = std::nullopt;
+    std::optional<std::string_view> m_Tag{};
 
     friend class LogConfigBuilder;
 };
@@ -202,10 +191,7 @@ public:
      * @return
      *      The final log configuration
      */
-    [[nodiscard]] constexpr LogConfig&& Build() noexcept
-    {
-        return std::move(m_Config);
-    }
+    [[nodiscard]] constexpr LogConfig&& Build() noexcept { return std::move(m_Config); }
 
 private:
     /**

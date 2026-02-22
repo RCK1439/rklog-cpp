@@ -40,15 +40,15 @@ private:
 
 private:
     /// The configuration for debug logs
-    LogConfig m_CfgDebug = defaults::DEBUG_CFG;
+    LogConfig m_CfgDebug{defaults::DEBUG_CFG};
     /// The configuration for info logs
-    LogConfig m_CfgInfo = defaults::INFO_CFG;
+    LogConfig m_CfgInfo{defaults::INFO_CFG};
     /// The configuration for warning logs
-    LogConfig m_CfgWarning = defaults::WARNING_CFG;
+    LogConfig m_CfgWarning{defaults::WARNING_CFG};
     /// The configuration for error logs
-    LogConfig m_CfgError = defaults::ERROR_CFG;
+    LogConfig m_CfgError{defaults::ERROR_CFG};
     /// The configuration for fatal logs
-    LogConfig m_CfgFatal = defaults::FATAL_CFG;
+    LogConfig m_CfgFatal{defaults::FATAL_CFG};
 
     friend class LogStyleBuilder;
 };
@@ -101,17 +101,14 @@ public:
      * @return
      *      The final log style
      */
-    [[nodiscard]] constexpr LogStyle&& Build() noexcept
-    {
-        return std::move(m_Style);
-    }
+    [[nodiscard]] constexpr LogStyle&& Build() noexcept { return std::move(m_Style); }
 
 private:
     constexpr LogStyleBuilder() noexcept = default;
 
 private:
     /// The style being built
-    LogStyle m_Style;
+    LogStyle m_Style{};
 
     friend constexpr LogStyleBuilder InitBuildStyle() noexcept;
 };

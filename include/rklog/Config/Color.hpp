@@ -7,12 +7,12 @@ namespace rklog {
 /**
  * Struct containing color data for color logging using true color
  */
-struct Color final
+struct Color
 {
 public:
-    uint8_t r = 0x00; // The red channel
-    uint8_t g = 0x00; // The green channel
-    uint8_t b = 0x00; // The blue channel
+    uint8_t r{}; // The red channel
+    uint8_t g{}; // The green channel
+    uint8_t b{}; // The blue channel
 
 public:
     constexpr Color() = default;
@@ -36,13 +36,13 @@ public:
 
 namespace rklog::defaults {
 
-constexpr Color COLOR_RED       = Color(255, 0, 0);
-constexpr Color COLOR_GREEN     = Color(0, 255, 0);
-constexpr Color COLOR_BLUE      = Color(0, 0, 255);
-constexpr Color COLOR_YELLOW    = Color(255, 255, 0);
-constexpr Color COLOR_MAGENTA   = Color(255, 0, 255);
-constexpr Color COLOR_LIGHTBLUE = Color(0, 255, 255);
-constexpr Color COLOR_WHITE     = Color(255, 255, 255);
-constexpr Color COLOR_BLACK     = Color(0, 0, 0);
+constexpr Color COLOR_RED{255, 0, 0};
+constexpr Color COLOR_GREEN{0, 255, 0};
+constexpr Color COLOR_BLUE{0, 0, 255};
+constexpr Color COLOR_YELLOW{255, 255, 0};
+constexpr Color COLOR_MAGENTA{255, 0, 255};
+constexpr Color COLOR_LIGHTBLUE{0, 255, 255};
+constexpr Color COLOR_WHITE{255, 255, 255};
+constexpr Color COLOR_BLACK{0, 0, 0};
 
 }

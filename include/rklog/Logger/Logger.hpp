@@ -134,9 +134,9 @@ protected:
 
 protected:
     /// The title of the logger
-    std::optional<std::string> m_Title = std::nullopt;
+    std::optional<std::string> m_Title{};
     /// The styling of the logger
-    LogStyle m_Style = defaults::DEFAULT_STYLE;
+    LogStyle m_Style{defaults::DEFAULT_STYLE};
 };
 
 }

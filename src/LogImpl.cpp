@@ -12,14 +12,12 @@
 
 static void EnableVirtualConsole()
 {
-    static bool enabled = false;
+    static bool enabled{};
     if (enabled)
-    {
         return;
-    }
 
     const ::HANDLE hErr = ::GetStdHandle(STD_ERROR_HANDLE);
-    ::DWORD dwMode = 0;
+    ::DWORD dwMode{};
     ::GetConsoleMode(hErr, &dwMode);
     dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
     ::SetConsoleMode(hErr, dwMode);
@@ -66,7 +64,7 @@ static std::optional<std::string> BuildColorCode(std::optional<Color> fg, std::o
         return std::format("\033[48;2;{};{};{}m", bgColor.r, bgColor.g, bgColor.b);
     }
 
-    return std::nullopt;
+    return {};
 }
 
 static std::string ColorizeString(std::string_view str, std::optional<Color> fg, std::optional<Color> bg)
@@ -121,13 +119,13 @@ void FileLogger::LogInternal(std::string_view msg, LogLevel level)
 
 ColorLogger& GetColorLogger(std::string_view title = "global") noexcept
 {
-    static ColorLogger colorLogger(title);
+    static ColorLogger colorLogger{title};
     return colorLogger;
 }
 
 BasicLogger& GetBasicLogger(std::string_view title = "global") noexcept
 {
-    static BasicLogger basicLogger(title);
+    static BasicLogger basicLogger{title};
     return basicLogger;
 }
 
