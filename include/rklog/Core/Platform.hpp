@@ -31,3 +31,13 @@
 #elif defined(_MSC_VER)
 #define RKLOG_UNREACHABLE() __assume(false)
 #endif
+
+// --- function as string -----------------------------------------------------
+
+#if defined(RKLOG_COMPILER_MSVC)
+#define RKLOG_CURR_FUNC __FUNCSIG__
+#elif defined(RKLOG_COMPILER_LLVM) || defined(RKLOG_COMPILER_GCC)
+#define RKLOG_CURR_FUNC __PRETTY_FUNCTION__
+#else
+#define RKLOG_CURR_FUNC __func__
+#endif
