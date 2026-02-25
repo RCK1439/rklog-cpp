@@ -45,7 +45,7 @@ public:
         Logger(title, style) {}
 
 protected:
-    virtual void LogInternal(std::string_view msg, LogLevel level) override;
+    virtual void LogInternal(std::string_view msg, LogLevel level) noexcept override;
 };
 
 }

@@ -65,7 +65,7 @@ public:
     inline uint32_t Seconds() const noexcept { return m_Seconds; }
 
 private:
-    constexpr TimeStamp() = default;
+    constexpr TimeStamp() noexcept = default;
 
     /**
      * Creates a new instance of a timestamp

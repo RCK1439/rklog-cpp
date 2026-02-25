@@ -15,7 +15,7 @@ namespace rklog {
 class Logger
 {
 public:
-    constexpr Logger() = default;
+    constexpr Logger() noexcept = default;
 
     /**
      * Creates an instance of a logger with a title
@@ -55,7 +55,7 @@ public:
      *      Any variadic arguments passed to the function
      */
     template<typename ... Args>
-    void Debug(const std::format_string<Args...> fmt, Args&& ... args)
+    void Debug(const std::format_string<Args...> fmt, Args&& ... args) noexcept
     {
         const std::string msg = std::format(fmt, std::forward<Args>(args)...);
         LogInternal(msg, LogLevel::LOG_DEBUG);
@@ -70,7 +70,7 @@ public:
      *      Any variadic arguments passed to the function
      */
     template<typename ... Args>
-    void Info(const std::format_string<Args...> fmt, Args&& ... args)
+    void Info(const std::format_string<Args...> fmt, Args&& ... args) noexcept
     {
         const std::string msg = std::format(fmt, std::forward<Args>(args)...);
         LogInternal(msg, LogLevel::LOG_INFO);
@@ -85,7 +85,7 @@ public:
      *      Any variadic arguments passed to the function
      */
     template<typename ... Args>
-    void Warn(const std::format_string<Args...> fmt, Args&& ... args)
+    void Warn(const std::format_string<Args...> fmt, Args&& ... args) noexcept
     {
         const std::string msg = std::format(fmt, std::forward<Args>(args)...);
         LogInternal(msg, LogLevel::LOG_WARNING);
@@ -100,7 +100,7 @@ public:
      *      Any variadic arguments passed to the function
      */
     template<typename ... Args>
-    void Error(const std::format_string<Args...> fmt, Args&& ... args)
+    void Error(const std::format_string<Args...> fmt, Args&& ... args) noexcept
     {
         const std::string msg = std::format(fmt, std::forward<Args>(args)...);
         LogInternal(msg, LogLevel::LOG_ERROR);
@@ -115,7 +115,7 @@ public:
      *      Any variadic arguments passed to the function
      */
     template<typename ... Args>
-    void Fatal(const std::format_string<Args...> fmt, Args&& ... args)
+    void Fatal(const std::format_string<Args...> fmt, Args&& ... args) noexcept
     {
         const std::string msg = std::format(fmt, std::forward<Args>(args)...);
         LogInternal(msg, LogLevel::LOG_FATAL);
@@ -130,7 +130,7 @@ protected:
      * @param[in] level
      *      The log level severity to log the message with
      */
-    virtual void LogInternal(std::string_view msg, LogLevel level) = 0;
+    virtual void LogInternal(std::string_view msg, LogLevel level) noexcept = 0;
 
 protected:
     /// The title of the logger

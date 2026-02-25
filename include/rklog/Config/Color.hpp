@@ -7,7 +7,7 @@ namespace rklog {
 /**
  * Struct containing color data for color logging using true color
  */
-struct Color
+struct Color final
 {
 public:
     uint8_t r{}; // The red channel
@@ -15,7 +15,7 @@ public:
     uint8_t b{}; // The blue channel
 
 public:
-    constexpr Color() = default;
+    constexpr Color() noexcept = default;
 
     /**
      * Creates a new instance of the color struct with defined values for the

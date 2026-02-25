@@ -21,7 +21,7 @@ public:
      * @param[in] filePath
      *      The path to the file to log to
      */
-    FileLogger(const std::filesystem::path& filePath) :
+    FileLogger(const std::filesystem::path& filePath) noexcept :
         Logger(), m_FileHandle(filePath) {}
     
     /**
@@ -32,7 +32,7 @@ public:
      * @param[in] title
      *      The title of the logger
      */
-    FileLogger(const std::filesystem::path& filePath, std::string_view title) :
+    FileLogger(const std::filesystem::path& filePath, std::string_view title) noexcept :
         Logger(title), m_FileHandle(filePath) {}
     
     /**
@@ -43,7 +43,7 @@ public:
      * @param[in] style
      *      The custom style of the logger
      */
-    FileLogger(const std::filesystem::path& filePath, LogStyle style) :
+    FileLogger(const std::filesystem::path& filePath, LogStyle style) noexcept :
         Logger(style), m_FileHandle(filePath) {}
     
     /**
@@ -56,7 +56,7 @@ public:
      * @param[in] style
      *      The custom style of the logger
      */
-    FileLogger(const std::filesystem::path& filePath, std::string_view title, LogStyle style) :
+    FileLogger(const std::filesystem::path& filePath, std::string_view title, LogStyle style) noexcept :
         Logger(title, style), m_FileHandle(filePath) {}
     
     /**
@@ -70,7 +70,7 @@ public:
     constexpr void DisableWriteToStdErr() noexcept { m_WriteToStdErr = false; }
 
 protected:
-    virtual void LogInternal(std::string_view msg, LogLevel level) override;
+    virtual void LogInternal(std::string_view msg, LogLevel level) noexcept override;
 
 private:
     /// The handle to the file that this logger is logging to
